@@ -1,6 +1,8 @@
 from openai import OpenAI
 
-client = OpenAI(api_key='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')
+client = OpenAI(
+    base_url="https://api.groq.com/openai/v",
+    api_key="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")
 
 def transcribe_audio(audio_path: str):
 
