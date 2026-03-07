@@ -1,6 +1,3 @@
-import shutil
-print(f"¿FFmpeg instalado?: {shutil.which('ffmpeg')}")
-
 from fastapi import FastAPI
 from app.routes.transcribe import router as transcribe_router
 
