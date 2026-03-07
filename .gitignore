@@ -1,0 +1,14 @@
+# Ignorar configuración personal de VS Code
+.vscode/
+
+# Ignorar archivos temporales de Python
+__pycache__/
+*.pyc
+
+# Ignorar el entorno virtual (donde están las librerías instaladas)
+venv/
+.venv/
+env/
+
+# Ignorar archivos de configuración sensibles
+.env
