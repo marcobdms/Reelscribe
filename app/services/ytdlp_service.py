@@ -8,18 +8,30 @@ def download_audio(url: str) -> str:
     output_path = os.path.join(tmpdir, "audio.%(ext)s")
 
     ydl_opts = {
-        "format": "bestaudio/best",
+        # 1. Cambiamos el formato para ser más específicos
+        "format": "m4a/bestaudio/best",
         "outtmpl": output_path,
         "cookiefile": "youtube_cookies.txt",
-        # Esta línea permite que yt-dlp descargue el 'solver' para el n-challenge
-        "remote_components": "ejs:github", 
+        
+        # 2. Forzamos el cliente de iOS (esto suele saltarse el n-challenge)
+        "extractor_args": {
+            "youtube": {
+                "player_client": ["ios"],
+                "skip": ["dash", "hls"]
+            }
+        },
+        
+        # 3. Quitamos la línea de remote_components que dio error de letras
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
             "preferredquality": "192",
         }],
+        
         "quiet": True,
-        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        "no_warnings": True,
+        # 4. Un User-Agent de iPhone real
+        "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1"
     }
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
