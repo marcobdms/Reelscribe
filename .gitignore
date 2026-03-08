@@ -1,8 +1,8 @@
 # Ignorar cookies y carpetas de Python
-backend python/youtube_cookies.txt
-backend python/__pycache__/
-backend python/.venv/
+backend-python/youtube_cookies.txt
+backend-python/__pycache__/
+backend-python/.venv/
 
 # Ignorar archivos de Swift
-Front end ios/DerivedData/
-Front end ios/*.xcuserstate
+Frontend-ios/DerivedData/
+Frontend-ios/*.xcuserstate
