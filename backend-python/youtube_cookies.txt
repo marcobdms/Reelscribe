@@ -1,4 +1,4 @@
 # Netscape HTTP Cookie File
 # https://curl.haxx.se/rfc/cookie_spec.html
 
-Deprecated 
+Deprecated
