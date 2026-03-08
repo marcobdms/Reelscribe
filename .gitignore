@@ -1,14 +1,8 @@
-# Ignorar configuración personal de VS Code
-.vscode/
+# Ignorar cookies y carpetas de Python
+backend python/youtube_cookies.txt
+backend python/__pycache__/
+backend python/.venv/
 
-# Ignorar archivos temporales de Python
-__pycache__/
-*.pyc
-
-# Ignorar el entorno virtual (donde están las librerías instaladas)
-venv/
-.venv/
-env/
-
-# Ignorar archivos de configuración sensibles
-.env
+# Ignorar archivos de Swift
+Front end ios/DerivedData/
+Front end ios/*.xcuserstate
