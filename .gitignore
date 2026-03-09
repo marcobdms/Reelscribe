@@ -6,3 +6,6 @@ backend-python/.venv/
 # Ignorar archivos de Swift
 Frontend-ios/DerivedData/
 Frontend-ios/*.xcuserstate
+
+# ignorar node_modules
+node_modules
