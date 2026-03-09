@@ -1,11 +1,23 @@
-# Ignorar cookies y carpetas de Python
+# --- Backend Python ---
 backend-python/youtube_cookies.txt
 backend-python/__pycache__/
 backend-python/.venv/
+backend-python/.env
 
-# Ignorar archivos de Swift
-Frontend-ios/DerivedData/
-Frontend-ios/*.xcuserstate
+# --- Frontend React (Next.js) ---
+# Ignoramos las carpetas pesadas dentro de reelscribe-web
+reelscribe-web/node_modules/
+reelscribe-web/.next/
+reelscribe-web/out/
+reelscribe-web/build/
 
-# ignorar node_modules
-node_modules
+# Ignorar archivos de configuración local y logs
+reelscribe-web/.env*.local
+reelscribe-web/npm-debug.log*
+reelscribe-web/yarn-debug.log*
+reelscribe-web/yarn-error.log*
+
+# --- Otros ---
+.DS_Store
+*.log
+.vscode/
