@@ -1,8 +1,23 @@
 "use client"
 
 import { useState } from "react"
+import UrlInput from "../components/UrlInput"
+import TranscribeButton from "../components/TranscribeButton"
+import ResultBox from "../components/ResultBox"
 import { transcribeVideo } from "../services/api"
 
+/*
+  PAGE — Página principal de ReelScribe.
+  
+  El layout usa las clases CSS de globals.css:
+    - .app-container → centra todo en la pantalla
+    - .glass-card   → la tarjeta con efecto cristal
+    - .app-title    → título con gradiente de color
+    - .app-subtitle → subtítulo en gris
+  
+  Para ajustar colores o tamaños, ve a globals.css → sección :root
+  No necesitas tocar este archivo para cambiar estilos.
+*/
 export default function Home() {
 
   const [url, setUrl] = useState("")
@@ -32,41 +47,26 @@ export default function Home() {
 
   return (
 
-    <main style={{padding:40,fontFamily:"Arial"}}>
+    <main className="app-container">
 
-      <h1>ReelScribe</h1>
+      <div className="glass-card">
 
-      <p>Paste TikTok / Reels / Shorts URL</p>
+        <h1 className="app-title">ReelScribe</h1>
 
-      <input
-        type="text"
-        placeholder="https://..."
-        value={url}
-        onChange={(e)=>setUrl(e.target.value)}
-        style={{
-          width:"100%",
-          padding:10,
-          marginBottom:20
-        }}
-      />
+        <p className="app-subtitle">
+          Paste a TikTok, Reel or Shorts URL
+        </p>
 
-      <button
-        onClick={handleTranscribe}
-        style={{
-          padding:"10px 20px",
-          cursor:"pointer"
-        }}
-      >
-        {loading ? "Transcribing..." : "Transcribe"}
-      </button>
+        <UrlInput url={url} setUrl={setUrl} />
 
-      <div style={{marginTop:40}}>
-
-        <h3>Result</h3>
-
-        <p>{transcription}</p>
+        <TranscribeButton
+          onClick={handleTranscribe}
+          loading={loading}
+        />
 
       </div>
+
+      <ResultBox transcription={transcription} />
 
     </main>
   )

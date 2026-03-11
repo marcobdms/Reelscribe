@@ -1,0 +1,366 @@
+/* ============================================================
+   REELSCRIBE — DESIGN SYSTEM (Clean White Apple)
+   ============================================================
+   
+   🎨 CÓMO AJUSTAR COLORES:
+   Todos los colores están centralizados aquí como CSS variables.
+   Solo necesitas tocar ESTE archivo para cambiar cualquier color.
+   Los componentes React usan clases CSS, no inline styles,
+   así que todo se controla desde aquí.
+   
+   No necesitas tocar ningún otro archivo del proyecto para cambiar
+   colores, fondos, bordes o efectos visuales.
+   
+   ============================================================ */
+
+/* ============================================================
+   1. VARIABLES DE COLOR — TOCA AQUÍ PARA CAMBIAR COLORES
+   ============================================================ */
+:root {
+
+  /* --- FONDOS (Background) ---
+     bg-start: parte superior de la página
+     bg-end:   parte inferior de la página
+     Si ambos son iguales → fondo plano sin gradiente.
+  */
+  --bg-start: #ffffff;          /* Blanco puro */
+  --bg-end: #f5f5f7;            /* Gris Apple muy suave (parte inferior) */
+
+  /* --- WALLPAPER DE FONDO (OPCIONAL) ---
+     Descomenta las 3 líneas de abajo y pon tu URL de imagen.
+     El wallpaper reemplaza el gradiente de fondo.
+     La imagen se carga por URL para que sea ligero en Vercel.
+  */
+  /* --bg-wallpaper-url: url('https://tu-imagen-aqui.com/wallpaper.jpg'); */
+  /* --bg-wallpaper-size: cover; */
+  /* --bg-wallpaper-position: center center; */
+
+  /* --- TARJETA PRINCIPAL --- */
+  --card-bg: #ffffff;
+  --card-border: #e8e8ed;
+  --card-shadow: rgba(0, 0, 0, 0.06);
+  --card-shadow-hover: rgba(0, 0, 0, 0.10);
+
+  /* --- COLOR DE ACENTO ---
+     Un solo color: Apple Blue. Cambia esto y se actualiza
+     el botón, el focus del input, el botón de copiar, y el título.
+  */
+  --accent: #007AFF;            /* Apple Blue */
+  --accent-hover: #0066d6;      /* Apple Blue más oscuro para hover */
+  --accent-light: rgba(0, 122, 255, 0.08);  /* Para fondos sutiles */
+  --accent-ring: rgba(0, 122, 255, 0.25);   /* Focus ring */
+
+  /* --- TEXTO --- */
+  --text-primary: #1d1d1f;      /* Negro Apple */
+  --text-secondary: #86868b;    /* Gris medio Apple */
+  --text-placeholder: #aeaeb2;  /* Gris claro para placeholders */
+
+  /* --- INPUTS --- */
+  --input-bg: #f5f5f7;          /* Gris Apple muy suave */
+  --input-border: transparent;
+  --input-border-focus: var(--accent);
+
+  /* --- BORDES REDONDEADOS --- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 50px;          /* Para botones pill */
+
+  /* --- TRANSICIONES --- */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+}
+
+
+/* ============================================================
+   2. RESET Y BASE
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  /* Fondo con gradiente sutil blanco → gris */
+  background: linear-gradient(180deg, var(--bg-start), var(--bg-end));
+
+  /* --- WALLPAPER (descomentar para activar) ---
+     Si activaste --bg-wallpaper-url arriba, descomenta esto
+     y comenta la línea de background de arriba:
+  */
+  /* background: 
+    var(--bg-wallpaper-url) var(--bg-wallpaper-position) / var(--bg-wallpaper-size) no-repeat fixed,
+    linear-gradient(180deg, var(--bg-start), var(--bg-end)); */
+
+  min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* ============================================================
+   3. LAYOUT PRINCIPAL
+   ============================================================ */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+/* --- TARJETA PRINCIPAL --- */
+.glass-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 12px var(--card-shadow);
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 480px;
+  transition: box-shadow var(--transition-normal);
+}
+
+.glass-card:hover {
+  box-shadow: 0 4px 24px var(--card-shadow-hover);
+}
+
+
+/* ============================================================
+   4. TIPOGRAFÍA
+   ============================================================ */
+.app-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.app-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+  font-weight: 400;
+}
+
+
+/* ============================================================
+   5. INPUT — Estilo Apple pill con glass blur + botón de pegar
+   ============================================================
+   Toca --input-bg y --input-border-focus arriba para cambiar.
+   El input ahora es pill-shaped con backdrop-blur.
+*/
+
+/* Wrapper que contiene el input + botón paste */
+.url-input-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.url-input {
+  width: 100%;
+  padding: 14px 100px 14px 20px; /* padding-right deja espacio al botón paste */
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: rgba(245, 245, 247, 0.7);        /* Fondo semi-translúcido */
+  backdrop-filter: blur(12px);                  /* Efecto glass blur */
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid var(--input-border);
+  border-radius: var(--radius-pill);            /* ← Pill shape (50px) */
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.url-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+.url-input:focus {
+  border-color: var(--input-border-focus);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+/* Botón de pegar dentro del input */
+.paste-btn {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--accent);
+  background: var(--accent-light);
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.paste-btn:hover {
+  background: rgba(0, 122, 255, 0.14);
+}
+
+.paste-btn svg {
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   6. BOTÓN — Sólido con color de acento
+   ============================================================
+   Cambia --accent arriba para cambiar el color del botón.
+*/
+.transcribe-btn {
+  width: 100%;
+  padding: 14px 28px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: #ffffff;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.transcribe-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--accent-ring);
+}
+
+.transcribe-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.transcribe-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Animación de loading */
+.transcribe-btn .loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
+/* ============================================================
+   7. RESULT BOX — Tarjeta de resultado limpia
+   ============================================================ */
+.result-container {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 480px;
+  animation: fadeSlideUp 0.35s ease-out;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 12px var(--card-shadow);
+  padding: 24px;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.result-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Botón de copiar */
+.copy-btn {
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--accent);
+  background: var(--accent-light);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.copy-btn:hover {
+  background: rgba(0, 122, 255, 0.14);
+}
+
+.result-text {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Error state */
+.result-text.error {
+  color: #FF3B30;             /* Apple Red para errores */
+}
+
+
+/* ============================================================
+   8. RESPONSIVE
+   ============================================================ */
+@media (max-width: 560px) {
+  .glass-card {
+    padding: 32px 24px;
+  }
+
+  .app-title {
+    font-size: 1.5rem;
+  }
+
+  .result-card {
+    padding: 20px 18px;
+  }
+}
