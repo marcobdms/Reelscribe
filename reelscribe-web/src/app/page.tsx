@@ -63,26 +63,28 @@ export default function Home() {
 
     <main className="app-container">
 
-      <div className="glass-card">
+      <div className={`main-content-row ${transcription ? "has-result" : ""}`}>
+        <div className="glass-card">
 
-        <h1 className="app-title">
-          {displayedTitle}<span className="cursor-blink">|</span>
-        </h1>
+          <h1 className="app-title">
+            {displayedTitle}<span className="cursor-blink">|</span>
+          </h1>
 
-        <p className="app-subtitle">
-          Video Transcriber
-        </p>
+          <p className="app-subtitle">
+            Video Transcriber
+          </p>
 
-        <UrlInput url={url} setUrl={setUrl} />
+          <UrlInput url={url} setUrl={setUrl} />
 
-        <TranscribeButton
-          onClick={handleTranscribe}
-          loading={loading}
-        />
+          <TranscribeButton
+            onClick={handleTranscribe}
+            loading={loading}
+          />
 
+        </div>
+
+        <ResultBox transcription={transcription} />
       </div>
-
-      <ResultBox transcription={transcription} />
 
     </main>
   )
