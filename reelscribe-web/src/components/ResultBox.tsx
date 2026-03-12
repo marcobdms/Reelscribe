@@ -57,9 +57,28 @@ export default function ResultBox({ transcription }: Props) {
           )}
         </div>
 
-        <p className={`result-text ${isError ? "error" : ""}`}>
-          {transcription}
-        </p>
+        {/* 
+          FORMATO DEL TEXTO: 
+          Aquí procesamos la transcripción. 
+          Si es un error, lo mostramos normal.
+          Si es texto válido, lo dividimos por saltos de línea (\n\n o \n) 
+          y generamos un párrafo <p> por cada bloque.
+        */}
+        <div className={`result-text ${isError ? "error" : ""}`}>
+          {isError ? (
+            <p>{transcription}</p>
+          ) : (
+            transcription.split(/\n+/).map((paragraph, index) => {
+              // Solo renderizamos párrafos que tengan contenido
+              if (!paragraph.trim()) return null;
+              return (
+                <p key={index} style={{ marginBottom: "12px", textAlign: "justify" }}>
+                  {paragraph}
+                </p>
+              );
+            })
+          )}
+        </div>
 
       </div>
     </div>

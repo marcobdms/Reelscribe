@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import UrlInput from "../components/UrlInput"
 import TranscribeButton from "../components/TranscribeButton"
 import ResultBox from "../components/ResultBox"
@@ -20,9 +20,23 @@ import { transcribeVideo } from "../services/api"
 */
 export default function Home() {
 
+  const fullTitle = "ReelScribe"
+  const [displayedTitle, setDisplayedTitle] = useState("")
   const [url, setUrl] = useState("")
   const [transcription, setTranscription] = useState("")
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    let index = 0
+    const interval = setInterval(() => {
+      setDisplayedTitle(fullTitle.slice(0, index + 1))
+      index++
+      if (index >= fullTitle.length) {
+        clearInterval(interval)
+      }
+    }, 120) // Typing speed: 120ms per character
+    return () => clearInterval(interval)
+  }, [])
 
   const handleTranscribe = async () => {
 
@@ -51,10 +65,12 @@ export default function Home() {
 
       <div className="glass-card">
 
-        <h1 className="app-title">ReelScribe</h1>
+        <h1 className="app-title">
+          {displayedTitle}<span className="cursor-blink">|</span>
+        </h1>
 
         <p className="app-subtitle">
-          Paste a TikTok, Reel or Shorts URL
+          Video Transcriber
         </p>
 
         <UrlInput url={url} setUrl={setUrl} />

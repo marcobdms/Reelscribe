@@ -23,17 +23,23 @@
      bg-end:   parte inferior de la página
      Si ambos son iguales → fondo plano sin gradiente.
   */
-  --bg-start: #ffffff;          /* Blanco puro */
-  --bg-end: #f5f5f7;            /* Gris Apple muy suave (parte inferior) */
+  --bg-start: #ffffff;
+  /* Blanco puro */
+  --bg-end: #f5f5f7;
+  /* Gris Apple muy suave (parte inferior) */
 
   /* --- WALLPAPER DE FONDO (OPCIONAL) ---
      Descomenta las 3 líneas de abajo y pon tu URL de imagen.
      El wallpaper reemplaza el gradiente de fondo.
      La imagen se carga por URL para que sea ligero en Vercel.
   */
-  /* --bg-wallpaper-url: url('https://tu-imagen-aqui.com/wallpaper.jpg'); */
-  /* --bg-wallpaper-size: cover; */
-  /* --bg-wallpaper-position: center center; */
+  --bg-wallpaper-url: url('https://images.unsplash.com/photo-1687042277586-971369d3d241?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  --bg-wallpaper-size: cover;
+  --bg-wallpaper-position: center center;
+
+  --bg-wallpaper-url: url('https://images.unsplash.com/photo-1687042277586-971369d3d241?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  --bg-wallpaper-size: cover;
+  --bg-wallpaper-position: center center;
 
   /* --- TARJETA PRINCIPAL --- */
   --card-bg: #ffffff;
@@ -45,18 +51,26 @@
      Un solo color: Apple Blue. Cambia esto y se actualiza
      el botón, el focus del input, el botón de copiar, y el título.
   */
-  --accent: #007AFF;            /* Apple Blue */
-  --accent-hover: #0066d6;      /* Apple Blue más oscuro para hover */
-  --accent-light: rgba(0, 122, 255, 0.08);  /* Para fondos sutiles */
-  --accent-ring: rgba(0, 122, 255, 0.25);   /* Focus ring */
+  --accent: #007AFF;
+  /* Apple Blue */
+  --accent-hover: #0066d6;
+  /* Apple Blue más oscuro para hover */
+  --accent-light: rgba(0, 122, 255, 0.08);
+  /* Para fondos sutiles */
+  --accent-ring: rgba(0, 122, 255, 0.25);
+  /* Focus ring */
 
   /* --- TEXTO --- */
-  --text-primary: #1d1d1f;      /* Negro Apple */
-  --text-secondary: #86868b;    /* Gris medio Apple */
-  --text-placeholder: #aeaeb2;  /* Gris claro para placeholders */
+  --text-primary: #1d1d1f;
+  /* Negro Apple */
+  --text-secondary: #86868b;
+  /* Gris medio Apple */
+  --text-placeholder: #aeaeb2;
+  /* Gris claro para placeholders */
 
   /* --- INPUTS --- */
-  --input-bg: #f5f5f7;          /* Gris Apple muy suave */
+  --input-bg: #f5f5f7;
+  /* Gris Apple muy suave */
   --input-border: transparent;
   --input-border-focus: var(--accent);
 
@@ -64,7 +78,8 @@
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --radius-pill: 50px;          /* Para botones pill */
+  --radius-pill: 50px;
+  /* Para botones pill */
 
   /* --- TRANSICIONES --- */
   --transition-fast: 0.2s ease;
@@ -75,7 +90,9 @@
 /* ============================================================
    2. RESET Y BASE
    ============================================================ */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -89,9 +106,9 @@ body {
      Si activaste --bg-wallpaper-url arriba, descomenta esto
      y comenta la línea de background de arriba:
   */
-  /* background: 
+  background:
     var(--bg-wallpaper-url) var(--bg-wallpaper-position) / var(--bg-wallpaper-size) no-repeat fixed,
-    linear-gradient(180deg, var(--bg-start), var(--bg-end)); */
+    linear-gradient(180deg, var(--bg-start), var(--bg-end));
 
   min-height: 100vh;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -114,8 +131,18 @@ body {
 }
 
 /* --- TARJETA PRINCIPAL --- */
+/*
+  AQUÍ PUEDES CAMBIAR EL COLOR DE LA TARJETA PRINCIPAL (El div que capturaste).
+  Actualmente usa --card-bg que es puro blanco (#ffffff).
+  Si la quieres estilo "cristal" translúcido como antes, cambia el `background`
+  de abajo a algo como: rgba(255, 255, 255, 0.6) y añade:
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+*/
 .glass-card {
-  background: var(--card-bg);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--card-border);
   border-radius: var(--radius-lg);
   box-shadow: 0 2px 12px var(--card-shadow);
@@ -123,6 +150,25 @@ body {
   width: 100%;
   max-width: 480px;
   transition: box-shadow var(--transition-normal);
+
+  /* Animación de Fade In desde abajo hacia arriba */
+  animation: cardFadeIn 0.8s ease-out forwards;
+  /* 0.8s es el tiempo que dura la animación completa */
+}
+
+/* Keyframes para la animación de la tarjeta principal */
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+    /* Empieza 30px más abajo */
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    /* Termina en su posición normal */
+  }
 }
 
 .glass-card:hover {
@@ -148,6 +194,33 @@ body {
   font-weight: 400;
 }
 
+/* Cursor parpadeante para el Typewriter effect */
+/* 
+  AQUÍ PUEDES EDITAR EL CURSOR TITILANDO:
+  - Cambia `color` si quieres otro color (ahora usa la variable --accent que es azul).
+  - Ajusta el tiempo (ej. 1s o 0.8s) para que la respiración sea más rápida o lenta.
+*/
+.cursor-blink {
+  font-weight: 100;
+  color: var(--accent);
+  /* Usamos ease-in-out para el fade suave, en lugar del corte directo de step-start */
+  animation: blinkSmooth 1s ease-in-out infinite;
+  margin-left: 2px;
+}
+
+/* Keyframes para el parpadeo tipo fundido (Fade-in / Fade-out) */
+@keyframes blinkSmooth {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1; /* Mitad de la animación, completamente visible */
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 
 /* ============================================================
    5. INPUT — Estilo Apple pill con glass blur + botón de pegar
@@ -165,15 +238,19 @@ body {
 
 .url-input {
   width: 100%;
-  padding: 14px 100px 14px 20px; /* padding-right deja espacio al botón paste */
+  padding: 14px 100px 14px 20px;
+  /* padding-right deja espacio al botón paste */
   font-size: 0.95rem;
   font-family: inherit;
   color: var(--text-primary);
-  background: rgba(245, 245, 247, 0.7);        /* Fondo semi-translúcido */
-  backdrop-filter: blur(12px);                  /* Efecto glass blur */
+  background: rgba(245, 245, 247, 0.7);
+  /* Fondo semi-translúcido */
+  backdrop-filter: blur(12px);
+  /* Efecto glass blur */
   -webkit-backdrop-filter: blur(12px);
   border: 1.5px solid var(--input-border);
-  border-radius: var(--radius-pill);            /* ← Pill shape (50px) */
+  border-radius: var(--radius-pill);
+  /* ← Pill shape (50px) */
   outline: none;
   transition: all var(--transition-fast);
 }
@@ -268,7 +345,9 @@ body {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 
@@ -287,6 +366,7 @@ body {
     opacity: 0;
     transform: translateY(12px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -294,7 +374,11 @@ body {
 }
 
 .result-card {
-  background: var(--card-bg);
+  /* Fondo cristal igual a la tarjeta principal */
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  
   border: 1px solid var(--card-border);
   border-radius: var(--radius-lg);
   box-shadow: 0 2px 12px var(--card-shadow);
@@ -344,7 +428,8 @@ body {
 
 /* Error state */
 .result-text.error {
-  color: #FF3B30;             /* Apple Red para errores */
+  color: #FF3B30;
+  /* Apple Red para errores */
 }
 
 

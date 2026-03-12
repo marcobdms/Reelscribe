@@ -33,7 +33,7 @@ export default function UrlInput({ url, setUrl }: Props) {
         id="url-input"
         type="text"
         className="url-input"
-        placeholder="Paste TikTok / Reel / Shorts URL"
+        placeholder="Paste Your URL Video Here"
         value={url}
         onChange={(e) => setUrl(e.target.value)}
       />
