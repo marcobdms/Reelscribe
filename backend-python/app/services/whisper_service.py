@@ -7,24 +7,30 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Configuramos el modelo para que corra en CPU con int8 (bajo consumo de RAM)
-# Podemos cambiar a "medium" o "small" mediante la variable de entorno si "large-v3" es muy pesado
-model_size = os.getenv("WHISPER_MODEL", "large-v3")
+# Cambiamos el modelo por defecto a 'small' para VPS con CPU limitada.
+# 'small' es unas 10 veces más rápido que 'large-v3' en CPU.
+model_size = os.getenv("WHISPER_MODEL", "small")
 logger.info(f"Cargando modelo {model_size} en CPU (int8)... esto puede tardar unos segundos.")
 
-# Cargamos el modelo en memoria una sola vez al iniciar
+# Cargamos el modelo
 model = WhisperModel(model_size, device="cpu", compute_type="int8")
 logger.info("Modelo cargado exitosamente.")
 
 def transcribe_audio(audio_path: str):
     logger.info(f"Iniciando transcripción de: {audio_path}")
     
-    # Transcribe el archivo de audio usando beam_size para mejor precisión
-    segments, info = model.transcribe(audio_path, beam_size=5)
+    # Reducimos beam_size a 1 para máxima velocidad (Greedy transcription)
+    # y activamos vad_filter para eliminar ruidos de fondo
+    segments, info = model.transcribe(
+        audio_path, 
+        beam_size=1, 
+        vad_filter=True, 
+        vad_parameters=dict(min_silence_duration_ms=500)
+    )
     
     text = ""
     for segment in segments:
         text += segment.text + " "
         
-    logger.info("Transcripción completada.")
+    logger.info(f"Transcripción completada. Idioma detectado: {info.language}")
     return text.strip()
