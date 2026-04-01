@@ -29,23 +29,28 @@ export default function UrlInput({ url, setUrl, language, setLanguage }: Props) 
   return (
     <div className="url-input-container">
       <div className="url-input-row">
-        <select 
-          className="lang-select" 
-          value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-          title="Select Language"
-        >
-          {LANGUAGES.map(lang => (
-            <option key={lang.code} value={lang.code}>{lang.code.toUpperCase()}</option>
-          ))}
-        </select>
+        
+        <div className="lang-select-wrapper">
+          <select 
+            className="lang-select" 
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            title="Seleccionar Idioma"
+          >
+            {LANGUAGES.map(lang => (
+              <option key={lang.code} value={lang.code}>
+                {lang.code === "auto" ? "Auto" : lang.code.toUpperCase()}
+              </option>
+            ))}
+          </select>
+        </div>
         
         <div className="url-input-wrapper">
           <input
             id="url-input"
             type="text"
             className="url-input"
-            placeholder="Paste Your URL Video Here"
+            placeholder="Pega la URL de tu video aquí"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
           />
@@ -54,7 +59,7 @@ export default function UrlInput({ url, setUrl, language, setLanguage }: Props) 
             type="button"
             className="paste-btn"
             onClick={handlePaste}
-            title="Paste from clipboard"
+            title="Pegar del portapapeles"
           >
             <svg
               width="14"
@@ -69,9 +74,10 @@ export default function UrlInput({ url, setUrl, language, setLanguage }: Props) 
               <rect x="9" y="2" width="6" height="4" rx="1" />
               <path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2" />
             </svg>
-            <span>Paste</span>
+            <span>Pegar</span>
           </button>
         </div>
+
       </div>
     </div>
   );

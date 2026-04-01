@@ -8,17 +8,17 @@ interface Props {
 
 export default function TranscribeButton({ onClick, loading, progressPhase }: Props) {
   const getButtonContent = () => {
-    if (!loading) return "Transcribe";
+    if (!loading) return "Transcribir";
     
     switch (progressPhase) {
       case "downloading":
-        return "⬇️ Downloading audio...";
+        return "Descargando audio...";
       case "transcribing":
-        return "🎙️ Transcribing...";
+        return "Transcribiendo...";
       case "done":
-        return "✅ Ready!";
+        return "¡Listo!";
       default:
-        return "Transcribing...";
+        return "Transcribiendo...";
     }
   };
 

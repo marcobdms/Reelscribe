@@ -20,6 +20,7 @@ export default function Home() {
 
   // History state
   const [history, setHistory] = useState<{url: string, transcription: string, date: string}[]>([])
+  const [isHistoryExpanded, setIsHistoryExpanded] = useState(false)
 
   // Load history from local storage on mount
   useEffect(() => {
@@ -43,10 +44,16 @@ export default function Home() {
   }, [])
 
   const saveToHistory = (newUrl: string, result: string) => {
+    // Evitamos duplicados y guardamos los más recientes primero
     const newEntry = { url: newUrl, transcription: result, date: new Date().toLocaleString() }
-    const updatedHistory = [newEntry, ...history.filter(h => h.url !== newUrl)].slice(0, 15) // Keep last 15
+    const updatedHistory = [newEntry, ...history.filter(h => h.url !== newUrl)].slice(0, 15)
     setHistory(updatedHistory)
     localStorage.setItem("reelscribe_history", JSON.stringify(updatedHistory))
+  }
+
+  const clearHistory = () => {
+    setHistory([])
+    localStorage.removeItem("reelscribe_history")
   }
 
   const handleTranscribe = async () => {
@@ -111,17 +118,27 @@ export default function Home() {
 
           {/* HISTORY DROPDOWN */}
           {history.length > 0 && (
-            <div className="history-section">
-              <p className="history-title">Recent Transcriptions</p>
-              <ul className="history-list">
-                {history.map((h, i) => (
-                  <li key={i} onClick={() => loadFromHistory(h.url, h.transcription)}>
-                    {h.url.length > 35 ? h.url.substring(0, 35) + "..." : h.url}
-                    <span className="history-date">{h.date}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+             <div className="history-section">
+               <div className="history-header">
+                 <p className="history-title">Transcripciones Recientes</p>
+                 <button className="clear-history-btn" onClick={clearHistory}>Borrar todo</button>
+               </div>
+               
+               <ul className={`history-list ${isHistoryExpanded ? 'expanded' : 'collapsed'}`}>
+                 {history.map((h, i) => (
+                   <li key={i} onClick={() => loadFromHistory(h.url, h.transcription)}>
+                     {h.url.length > 35 ? h.url.substring(0, 35) + "..." : h.url}
+                     <span className="history-date">{h.date}</span>
+                   </li>
+                 ))}
+               </ul>
+               
+               {history.length > 1 && (
+                 <button className="expand-history-btn" onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}>
+                   {isHistoryExpanded ? "Ver menos" : "Ver más"}
+                 </button>
+               )}
+             </div>
           )}
 
         </div>
