@@ -1,0 +1,78 @@
+import type { Config } from "tailwindcss";
+
+const config: Config = {
+  darkMode: "class",
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        "on-tertiary-container": "#e4abf6",
+        "surface-tint": "#235eab",
+        "tertiary-container": "#6a3a7c",
+        "surface-container-highest": "#e2e2e2",
+        "surface-bright": "#f9f9f9",
+        "on-tertiary-fixed-variant": "#623374",
+        "on-surface": "#1a1c1c",
+        "on-secondary": "#ffffff",
+        "primary-fixed": "#d6e3ff",
+        "surface-container": "#eeeeee",
+        "primary-fixed-dim": "#aac7ff",
+        "background": "#f9f9f9",
+        "on-secondary-container": "#6c3b00",
+        "inverse-primary": "#aac7ff",
+        "outline": "#737782",
+        "on-primary-container": "#9dbfff",
+        "on-error-container": "#93000a",
+        "surface-container-lowest": "#ffffff",
+        "primary-container": "#004c99",
+        "on-secondary-fixed": "#2e1500",
+        "on-error": "#ffffff",
+        "on-background": "#1a1c1c",
+        "surface-container-low": "#f3f3f3",
+        "primary": "#00366f",
+        "on-primary-fixed": "#001b3e",
+        "tertiary": "#512263",
+        "on-primary-fixed-variant": "#00458d",
+        "secondary-fixed": "#ffdcc1",
+        "tertiary-fixed": "#f9d8ff",
+        "on-secondary-fixed-variant": "#6c3a00",
+        "surface-variant": "#e2e2e2",
+        "on-tertiary-fixed": "#320145",
+        "error": "#ba1a1a",
+        "error-container": "#ffdad6",
+        "inverse-on-surface": "#f0f1f1",
+        "outline-variant": "#c2c6d3",
+        "on-surface-variant": "#424751",
+        "tertiary-fixed-dim": "#ecb2fd",
+        "surface-container-high": "#e8e8e8",
+        "inverse-surface": "#2f3131",
+        "secondary-fixed-dim": "#ffb877",
+        "secondary-container": "#fda145",
+        "secondary": "#8e4f00",
+        "on-primary": "#ffffff",
+        "surface": "#f9f9f9",
+        "on-tertiary": "#ffffff",
+        "surface-dim": "#dadada"
+      },
+      fontFamily: {
+        "headline": ["Inter", "sans-serif"],
+        "body": ["Inter", "sans-serif"],
+        "label": ["Inter", "sans-serif"],
+        "inter": ["Inter", "sans-serif"],
+      },
+      borderRadius: {
+        "DEFAULT": "0.25rem",
+        "lg": "0.5rem",
+        "xl": "0.75rem",
+        "full": "9999px"
+      },
+    },
+  },
+  plugins: [],
+};
+
+export default config;

@@ -1,28 +1,26 @@
 import "./globals.css"
 
 export const metadata = {
-  title: "ReelScribe",
-  description: "Transcribe TikTok, Reels and Shorts"
+  title: "ReelScribe - AI Video Transcriber",
+  description: "Precision transcription for creators."
 }
 
-/*
-  LAYOUT — Aquí solo se carga la fuente Inter de Google Fonts.
-  No hay nada más que tocar aquí para ajustar estilos;
-  todo el diseño visual está en globals.css.
-*/
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="es" className="light">
       <head>
-        {/* Fuente Inter de Google Fonts — Puedes cambiarla por otra si quieres */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
           rel="stylesheet"
         />
       </head>
