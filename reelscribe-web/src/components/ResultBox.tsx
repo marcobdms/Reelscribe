@@ -1,18 +1,3 @@
-/*
-  RESULT BOX — Tarjeta glass para la transcripción.
-  
-  Estilos en globals.css:
-    .result-container  → wrapper con animación fadeSlideUp
-    .result-card       → tarjeta glass
-    .result-header     → cabecera con título + botón copiar
-    .result-title      → texto "TRANSCRIPTION"
-    .copy-btn          → botón de copiar al portapapeles
-    .result-text       → texto de la transcripción
-    .result-text.error → estilo rojo para errores
-  
-  Para cambiar colores, ve a globals.css → sección 7. RESULT BOX
-*/
-
 "use client"
 
 import { useState } from "react"
@@ -23,66 +8,84 @@ interface Props {
 
 export default function ResultBox({ transcription }: Props) {
 
-  const [copied, setCopied] = useState(false)
+  const [copiedAction, setCopiedAction] = useState<string | null>(null)
 
   if (!transcription) return null
 
-  const isError = transcription === "Error transcribing video"
+  const isError = transcription.includes("Error transcribing")
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(transcription)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch {
-      /* Fallback silencioso si el clipboard API no está disponible */
-    }
+      setCopiedAction("copy")
+      setTimeout(() => setCopiedAction(null), 2000)
+    } catch { }
+  }
+
+  const openChatGPTWithPrompt = async (action: string, promptText: string) => {
+    try {
+      const fullText = `${promptText}\n\n"${transcription}"`
+      await navigator.clipboard.writeText(fullText)
+      setCopiedAction(action)
+      
+      // Abre en nueva pestaña a ChatGPT
+      window.open("https://chatgpt.com/", "_blank", "noopener,noreferrer")
+      
+      setTimeout(() => setCopiedAction(null), 3000)
+    } catch { }
   }
 
   return (
-
     <div className="result-container">
       <div className="result-card">
 
         <div className="result-header">
           <span className="result-title">Transcription</span>
-          {!isError && (
-            <button
-              id="copy-btn"
-              className="copy-btn"
-              onClick={handleCopy}
-            >
-              {copied ? "Copied ✓" : "Copy"}
-            </button>
-          )}
         </div>
 
-        {/* 
-          FORMATO DEL TEXTO: 
-          Texto renderizado directamente sin crear párrafos extra, 
-          solo justificado.
-        */}
-        <div className={`result-text ${isError ? "error" : ""}`} style={{ textAlign: "justify" }}>
+        {/* CONTENIDO */}
+        <div className={`result-text ${isError ? "error" : ""}`} style={{ textAlign: "justify", marginBottom: "20px" }}>
           {(() => {
             if (isError) return transcription;
-            
-            // Quitar espacios al principio y al final
             let text = transcription.trim();
-            
             if (text.length > 0) {
-              // Si el último caracter no es un punto (u otro signo), añadir punto final.
               const lastChar = text.slice(-1);
               if (!['.', '!', '?'].includes(lastChar)) {
                 text += '.';
               }
             }
-            
             return text;
           })()}
         </div>
 
+        {/* ACCIONES INTELIGENTES */}
+        {!isError && (
+          <div className="action-buttons">
+            <button className="ai-btn copy-only" onClick={handleCopy}>
+              {copiedAction === "copy" ? "Copied ✓" : "Copy Simple"}
+            </button>
+            <button 
+              className="ai-btn verify" 
+              onClick={() => openChatGPTWithPrompt("verify", "Verifica la veracidad de la siguiente información, sé crítico y busca fallos lógicos o datos erróneos si es necesario:")}
+            >
+              {copiedAction === "verify" ? "Opening GPT..." : "🔍 Inspect Truth"}
+            </button>
+            <button 
+              className="ai-btn context" 
+              onClick={() => openChatGPTWithPrompt("context", "Dame mucho más contexto, detalles históricos o técnicos, y explícame en profundidad la siguiente información:")}
+            >
+              {copiedAction === "context" ? "Opening GPT..." : "🧠 Deep Context"}
+            </button>
+            <button 
+              className="ai-btn chatgpt" 
+              onClick={() => openChatGPTWithPrompt("chatgpt", "Analiza el siguiente texto extraído de un video corto:")}
+            >
+              {copiedAction === "chatgpt" ? "Opening GPT..." : "🤖 Send to ChatGPT"}
+            </button>
+          </div>
+        )}
+
       </div>
     </div>
-
   )
 }

@@ -1,10 +1,8 @@
 // services/api.ts
 
-// Esta constante detecta si estamos en Vercel o en local
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-export async function transcribeVideo(url: string): Promise<string> {
-  // Usamos la variable para construir la ruta al endpoint /transcribe
+export async function transcribeVideo(url: string, language: string = "auto"): Promise<string> {
   const response = await fetch(`${API_BASE_URL}/transcribe`, {
     method: "POST",
     headers: {
@@ -12,11 +10,11 @@ export async function transcribeVideo(url: string): Promise<string> {
     },
     body: JSON.stringify({
       url: url,
+      language: language
     }),
   });
 
   if (!response.ok) {
-    // Si Railway da error, intentamos capturar el porqué
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.detail || "API error");
   }

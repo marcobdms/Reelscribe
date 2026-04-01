@@ -16,13 +16,15 @@ logger.info(f"Cargando modelo {model_size} en CPU (int8)... esto puede tardar un
 model = WhisperModel(model_size, device="cpu", compute_type="int8")
 logger.info("Modelo cargado exitosamente.")
 
-def transcribe_audio(audio_path: str):
+def transcribe_audio(audio_path: str, language: str = "auto"):
     logger.info(f"Iniciando transcripción de: {audio_path}")
     
     # Reducimos beam_size a 1 para máxima velocidad (Greedy transcription)
     # y activamos vad_filter para eliminar ruidos de fondo
+    lang_param = None if language == "auto" else language
     segments, info = model.transcribe(
         audio_path, 
+        language=lang_param,
         beam_size=1, 
         vad_filter=True, 
         vad_parameters=dict(min_silence_duration_ms=500)
@@ -32,5 +34,5 @@ def transcribe_audio(audio_path: str):
     for segment in segments:
         text += segment.text + " "
         
-    logger.info(f"Transcripción completada. Idioma detectado: {info.language}")
+    logger.info(f"Transcripción completada. Idioma detectado/usado: {info.language}")
     return text.strip()

@@ -9,10 +9,11 @@ router = APIRouter()
 async def transcribe_video(payload: TranscriptionRequest):
 
     url = payload.url
+    language = payload.language
 
     audio_path = download_audio(url)
 
-    text = transcribe_audio(audio_path)
+    text = transcribe_audio(audio_path, language)
 
     return {
         "transcription": text
