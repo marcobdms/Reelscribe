@@ -109,12 +109,12 @@ export default function Home() {
                 <label className="text-white text-xs font-bold tracking-widest uppercase opacity-70 ml-2">ORIGEN DEL VIDEO</label>
                 
                 {/* Pill Input Group */}
-                <div className="bg-white/90 rounded-full p-2 flex items-center shadow-lg border border-white/50 h-14">
-                  <div className="relative flex items-center border-r border-slate-200 hover:bg-slate-100/50 rounded-full h-10 transition-all overflow-hidden w-24">
+                <div className="bg-white/90 rounded-full p-2 flex items-center shadow-lg border border-white/50 h-14 w-full">
+                  <div className="relative flex items-center border-r border-slate-200 hover:bg-slate-100/50 rounded-full h-10 transition-all overflow-hidden flex-shrink-0 w-20 sm:w-24">
                     <select 
                       value={language}
                       onChange={(e) => setLanguage(e.target.value)}
-                      className="bg-transparent border-none focus:ring-0 text-sm font-bold text-slate-700 w-full h-full pl-4 pr-8 appearance-none cursor-pointer outline-none"
+                      className="bg-transparent border-none focus:ring-0 text-xs sm:text-sm font-bold text-slate-700 w-full h-full pl-3 sm:pl-4 pr-6 sm:pr-8 appearance-none cursor-pointer outline-none"
                     >
                       <option value="auto">AUTO</option>
                       <option value="es">ES</option>
@@ -123,11 +123,11 @@ export default function Home() {
                       <option value="fr">FR</option>
                       <option value="de">DE</option>
                     </select>
-                    <span className="material-symbols-outlined text-slate-400 text-lg absolute right-2 pointer-events-none">expand_more</span>
+                    <span className="material-symbols-outlined text-slate-400 text-base sm:text-lg absolute right-1 sm:right-2 pointer-events-none">expand_more</span>
                   </div>
                   
                   <input 
-                    className="flex-1 bg-transparent border-none focus:ring-0 text-slate-800 placeholder-slate-400 font-medium px-4 text-sm h-10 outline-none" 
+                    className="flex-1 bg-transparent border-none focus:ring-0 text-slate-800 placeholder-slate-400 font-medium px-2 sm:px-4 text-xs sm:text-sm h-10 outline-none min-w-0" 
                     placeholder="https://www.tiktok.com/..." 
                     type="text" 
                     value={url}
@@ -136,10 +136,10 @@ export default function Home() {
                   
                   <button 
                     onClick={handlePaste}
-                    className="bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-5 py-2 flex items-center space-x-2 transition-all duration-200 h-10 active:scale-95 shadow-sm"
+                    className="bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 sm:px-5 py-2 flex items-center space-x-1 sm:space-x-2 transition-all duration-200 h-10 flex-shrink-0 active:scale-95 shadow-sm"
                   >
-                    <span className="material-symbols-outlined text-sm">content_paste</span>
-                    <span className="text-sm font-bold">Pegar</span>
+                    <span className="material-symbols-outlined text-base sm:text-sm">content_paste</span>
+                    <span className="text-[10px] sm:text-sm font-bold">Pegar</span>
                   </button>
                 </div>
               </div>
@@ -147,7 +147,7 @@ export default function Home() {
               <button 
                 onClick={handleTranscribe}
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-primary to-primary-container text-white font-bold text-lg py-5 rounded-xl shadow-xl hover:opacity-90 transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95 disabled:opacity-70 disabled:pointer-events-none"
+                className="w-full bg-gradient-to-r from-primary to-primary-container text-white font-bold text-lg py-4 sm:py-5 rounded-xl shadow-xl hover:opacity-90 transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95 disabled:opacity-70 disabled:pointer-events-none"
               >
                 {loading ? (
                   progressPhase === "downloading" ? "Descargando..." : "Transcribiendo..."
@@ -158,12 +158,12 @@ export default function Home() {
               
               <div className="flex justify-center space-x-6 text-white/60">
                 <div className="flex items-center space-x-2">
-                  <span className="material-symbols-outlined text-sm">verified</span>
-                  <span className="text-xs font-bold uppercase tracking-widest">99% Accuracy</span>
+                  <span className="material-symbols-outlined text-sm font-bold">verified</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest">99% Accuracy</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="material-symbols-outlined text-sm">bolt</span>
-                  <span className="text-xs font-bold uppercase tracking-widest">Instant</span>
+                  <span className="material-symbols-outlined text-sm font-bold">bolt</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest">Instant</span>
                 </div>
               </div>
             </div>
@@ -172,7 +172,7 @@ export default function Home() {
           {/* Right Side: Results Column */}
           <div className="h-full">
             {/* Results Card */}
-            <div className={`bg-white/15 backdrop-blur-2xl p-8 rounded-[2rem] shadow-2xl border border-white/20 h-full flex flex-col min-h-[600px] transition-all duration-500 ${!transcription && !loading ? 'opacity-40' : 'opacity-100'}`}>
+            <div className={`bg-white/15 backdrop-blur-2xl p-6 sm:p-8 rounded-[2rem] shadow-2xl border border-white/20 h-full flex flex-col min-h-[500px] sm:min-h-[600px] transition-all duration-500 ${!transcription && !loading ? 'opacity-40' : 'opacity-100'}`}>
               <div className="flex justify-between items-center mb-6">
                 <span className="text-white text-xs font-black tracking-widest uppercase opacity-70">TRANSCRIPCIÓN</span>
                 {transcription && !isError && (
@@ -184,7 +184,7 @@ export default function Home() {
               </div>
               
               {/* Results Area */}
-              <div className="flex-1 bg-white/10 rounded-2xl p-6 mb-8 border border-white/10 overflow-y-auto min-h-[300px] text-justify">
+              <div className="flex-1 bg-white/10 rounded-2xl p-5 sm:p-6 mb-6 sm:mb-8 border border-white/10 overflow-y-auto min-h-[250px] text-justify">
                 {transcription ? (
                   <p className={`text-white/90 leading-relaxed font-inter text-sm md:text-base ${isError ? 'text-red-300' : ''}`}>
                     {transcription}
@@ -197,37 +197,37 @@ export default function Home() {
               </div>
               
               {/* Action Grid */}
-              <div className={`grid grid-cols-2 gap-4 transition-all duration-300 ${!transcription || isError ? 'opacity-30 pointer-events-none' : ''}`}>
+              <div className={`grid grid-cols-2 gap-3 sm:gap-4 transition-all duration-300 ${!transcription || isError ? 'opacity-30 pointer-events-none' : ''}`}>
                 <button 
                   onClick={handleCopy}
-                  className="flex items-center justify-center space-x-2 py-4 bg-white/90 hover:bg-white text-slate-900 rounded-xl transition-all duration-200 active:scale-95 shadow-sm"
+                  className="flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-2 py-3 sm:py-4 bg-white/90 hover:bg-white text-slate-900 rounded-xl transition-all duration-200 active:scale-95 shadow-sm"
                 >
-                  <span className="material-symbols-outlined text-xl">{copiedAction === "copy" ? "check" : "content_copy"}</span>
-                  <span className="text-sm font-bold">{copiedAction === "copy" ? "Copiado!" : "Copiar Simple"}</span>
+                  <span className="material-symbols-outlined text-lg sm:text-xl flex-shrink-0">{copiedAction === "copy" ? "check" : "content_copy"}</span>
+                  <span className="text-[10px] sm:text-sm font-bold text-center">{copiedAction === "copy" ? "Copiado!" : "Copiar Simple"}</span>
                 </button>
                 
                 <button 
                   onClick={() => openChatGPTWithPrompt("verify", "Verifica la veracidad de la siguiente información, sé crítico y busca fallos lógicos o datos erróneos si es necesario:")}
-                  className="flex items-center justify-center space-x-2 py-4 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all duration-200 active:scale-95 border border-white/20"
+                  className="flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-2 py-3 sm:py-4 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all duration-200 active:scale-95 border border-white/20"
                 >
-                  <span className="material-symbols-outlined text-xl">{copiedAction === "verify" ? "check" : "fact_check"}</span>
-                  <span className="text-sm font-bold">{copiedAction === "verify" ? "Abriendo..." : "Inspeccionar Veracidad"}</span>
+                  <span className="material-symbols-outlined text-lg sm:text-xl flex-shrink-0">{copiedAction === "verify" ? "check" : "fact_check"}</span>
+                  <span className="text-[10px] sm:text-sm font-bold text-center leading-tight">{copiedAction === "verify" ? "Abriendo..." : "Inspeccionar Veracidad"}</span>
                 </button>
                 
                 <button 
                   onClick={() => openChatGPTWithPrompt("context", "Dame mucho más contexto, detalles históricos o técnicos, y explícame en profundidad la siguiente información:")}
-                  className="flex items-center justify-center space-x-2 py-4 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all duration-200 active:scale-95 border border-white/20"
+                  className="flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-2 py-3 sm:py-4 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all duration-200 active:scale-95 border border-white/20"
                 >
-                  <span className="material-symbols-outlined text-xl">{copiedAction === "context" ? "check" : "psychology"}</span>
-                  <span className="text-sm font-bold">{copiedAction === "context" ? "Abriendo..." : "Contexto Profundo"}</span>
+                  <span className="material-symbols-outlined text-lg sm:text-xl flex-shrink-0">{copiedAction === "context" ? "check" : "psychology"}</span>
+                  <span className="text-[10px] sm:text-sm font-bold text-center leading-tight">{copiedAction === "context" ? "Abriendo..." : "Contexto Profundo"}</span>
                 </button>
                 
                 <button 
                    onClick={() => openChatGPTWithPrompt("chatgpt", "Analiza el siguiente texto extraído de un video corto:")}
-                  className="flex items-center justify-center space-x-2 py-4 bg-primary-container hover:opacity-90 text-white rounded-xl transition-all duration-200 active:scale-95 shadow-lg"
+                  className="flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-2 py-3 sm:py-4 bg-primary-container hover:opacity-90 text-white rounded-xl transition-all duration-200 active:scale-95 shadow-lg"
                 >
-                  <span className="material-symbols-outlined text-xl">{copiedAction === "chatgpt" ? "check" : "bolt"}</span>
-                  <span className="text-sm font-bold">{copiedAction === "chatgpt" ? "Abriendo..." : "Enviar a ChatGPT"}</span>
+                  <span className="material-symbols-outlined text-lg sm:text-xl flex-shrink-0">{copiedAction === "chatgpt" ? "check" : "bolt"}</span>
+                  <span className="text-[10px] sm:text-sm font-bold text-center">{copiedAction === "chatgpt" ? "Abriendo..." : "Enviar a ChatGPT"}</span>
                 </button>
               </div>
             </div>
