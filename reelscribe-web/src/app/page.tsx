@@ -1,17 +1,22 @@
 "use client"
 
-import { useState, type ReactNode } from "react"
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react"
 import { transcribeVideo } from "../services/api"
 
+type Screen = "hero" | "leaving" | "tool"
 type ProgressPhase = "idle" | "downloading" | "transcribing" | "done"
 type IconName =
   | "arrow"
-  | "bolt"
   | "check"
   | "chevron"
   | "clipboard"
   | "copy"
-  | "document"
   | "factCheck"
   | "link"
   | "spark"
@@ -23,7 +28,6 @@ const iconPaths: Record<IconName, ReactNode> = {
       <path d="m13 6 6 6-6 6" />
     </>
   ),
-  bolt: <path d="m13 2-8 12h7l-1 8 8-12h-7l1-8Z" />,
   check: <path d="m5 12 4 4L19 6" />,
   chevron: <path d="m8 10 4 4 4-4" />,
   clipboard: (
@@ -36,12 +40,6 @@ const iconPaths: Record<IconName, ReactNode> = {
     <>
       <rect x="8" y="8" width="11" height="11" rx="2" />
       <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
-    </>
-  ),
-  document: (
-    <>
-      <path d="M7 3h7l4 4v14H7z" />
-      <path d="M14 3v5h4M10 13h5M10 17h5" />
     </>
   ),
   factCheck: (
@@ -78,70 +76,127 @@ function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
   )
 }
 
+function PreviewDocument() {
+  return (
+    <article className="preview-document" aria-label="Ejemplo de transcripción">
+      <header className="document-heading">
+        <p>Vídeos de creadores.pdf</p>
+      </header>
+      <div className="preview-document-copy">
+        <p className="speaker-label">ALTAVOZ 1 · 0:00</p>
+        <p>
+          Una idea pequeña puede convertirse en una gran pieza de contenido.
+          Empieza por escuchar con atención, encuentra el momento que importa y
+          deja que las palabras hagan el resto.
+        </p>
+        <p>
+          Cuando la conversación está por escrito, es mucho más fácil volver a
+          ella, compartirla y crear algo nuevo.
+        </p>
+      </div>
+    </article>
+  )
+}
+
 export default function Home() {
+  const [screen, setScreen] = useState<Screen>("hero")
   const [url, setUrl] = useState("")
   const [language, setLanguage] = useState("auto")
   const [transcription, setTranscription] = useState("")
   const [loading, setLoading] = useState(false)
-  const [progressPhase, setProgressPhase] = useState<ProgressPhase>("idle")
+  const [progressPhase, setProgressPhase] =
+    useState<ProgressPhase>("idle")
   const [copiedAction, setCopiedAction] = useState<string | null>(null)
+  const toolTitleRef = useRef<HTMLHeadingElement>(null)
+
+  useEffect(() => {
+    if (screen !== "leaving") return
+
+    const transitionTimer = window.setTimeout(() => {
+      setScreen("tool")
+    }, 280)
+
+    return () => window.clearTimeout(transitionTimer)
+  }, [screen])
+
+  useEffect(() => {
+    if (screen === "tool") {
+      toolTitleRef.current?.focus()
+    }
+  }, [screen])
+
+  const openTool = () => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches
+    setScreen(reduceMotion ? "tool" : "leaving")
+  }
+
+  const returnHome = () => {
+    setScreen("hero")
+  }
 
   const handlePaste = async () => {
     try {
       const text = await navigator.clipboard.readText()
       setUrl(text)
     } catch {
-      // The field remains available for manual paste.
+      // El campo sigue disponible para pegar manualmente.
     }
   }
 
-  const handleTranscribe = async () => {
-    if (!url) return
+  const handleTranscribe = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (!url || loading) return
 
     setLoading(true)
     setProgressPhase("downloading")
     setTranscription("")
 
-    const transcribingTimeout = setTimeout(() => {
+    const transcribingTimeout = window.setTimeout(() => {
       setProgressPhase("transcribing")
     }, 4000)
 
     try {
       const result = await transcribeVideo(url, language)
-      clearTimeout(transcribingTimeout)
+      window.clearTimeout(transcribingTimeout)
       setProgressPhase("done")
       setTranscription(result)
     } catch {
-      clearTimeout(transcribingTimeout)
+      window.clearTimeout(transcribingTimeout)
       setProgressPhase("idle")
       setTranscription("Error transcribing video")
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(transcription)
       setCopiedAction("copy")
-      setTimeout(() => setCopiedAction(null), 2000)
+      window.setTimeout(() => setCopiedAction(null), 2000)
     } catch {
-      // Clipboard permissions are controlled by the browser.
+      // Los permisos del portapapeles dependen del navegador.
     }
   }
 
-  const openChatGPTWithPrompt = async (action: string, promptText: string) => {
+  const openChatGPTWithPrompt = async (
+    action: string,
+    promptText: string,
+  ) => {
     try {
       const fullText = `${promptText}\n\n"${transcription}"`
       await navigator.clipboard.writeText(fullText)
       setCopiedAction(action)
-
-      const chatGptUrl = `https://chatgpt.com/?q=${encodeURIComponent(fullText)}`
-      window.open(chatGptUrl, "_blank", "noopener,noreferrer")
-
-      setTimeout(() => setCopiedAction(null), 3000)
+      window.open(
+        `https://chatgpt.com/?q=${encodeURIComponent(fullText)}`,
+        "_blank",
+        "noopener,noreferrer",
+      )
+      window.setTimeout(() => setCopiedAction(null), 3000)
     } catch {
-      // Clipboard and new-window permissions are controlled by the browser.
+      // Los permisos del portapapeles dependen del navegador.
     }
   }
 
@@ -149,159 +204,176 @@ export default function Home() {
   const hasResult = Boolean(transcription) && !isError
   const isTranscribing = progressPhase === "transcribing"
   const progressLabel = isTranscribing
-    ? "Pasando audio a texto"
+    ? "Pasando el audio a texto"
     : "Preparando el vídeo"
-  const progressDetail = isTranscribing
-    ? "La transcripción aparecerá en cuanto termine."
-    : "Estamos aislando el audio."
-  const progressValue = isTranscribing ? 76 : 34
 
   return (
     <div className="app-page">
-      <a className="skip-link" href="#workspace">
-        Saltar al transcriptor
+      <a className="skip-link" href="#main-content">
+        Saltar al contenido
       </a>
 
       <header className="site-header">
         <div className="header-inner">
-          <a className="brand" href="#workspace" aria-label="ReelScribe, transcriptor">
+          <button
+            className="brand"
+            type="button"
+            onClick={returnHome}
+            aria-label="Volver a la portada de ReelScribe"
+          >
             ReelScribe
-          </a>
+          </button>
         </div>
       </header>
 
-      <main className="tool-page" id="main-content">
-        <section
-          className="workspace"
-          id="workspace"
-          aria-labelledby="tool-title"
-          aria-busy={loading}
-        >
-          <div className="workspace-body">
-            <div className="composer-panel">
-              <h1 id="tool-title">Transcribir vídeo</h1>
-
-              <form
-                className="transcription-form"
-                onSubmit={(event) => {
-                  event.preventDefault()
-                  void handleTranscribe()
-                }}
-              >
-                <div className="field-group">
-                  <label htmlFor="video-url">Enlace del vídeo</label>
-                  <div className="url-control">
-                    <span className="field-icon">
-                      <Icon name="link" size={18} />
-                    </span>
-                    <input
-                      id="video-url"
-                      name="video-url"
-                      type="url"
-                      inputMode="url"
-                      autoComplete="url"
-                      placeholder="https://..."
-                      required
-                      value={url}
-                      onChange={(event) => setUrl(event.target.value)}
-                    />
-                    <button
-                      className="paste-button"
-                      type="button"
-                      onClick={handlePaste}
-                    >
-                      <Icon name="clipboard" size={17} />
-                      <span>Pegar</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="field-group">
-                  <label htmlFor="language">Idioma del vídeo</label>
-                  <div className="select-control">
-                    <select
-                      id="language"
-                      name="language"
-                      value={language}
-                      onChange={(event) => setLanguage(event.target.value)}
-                    >
-                      <option value="auto">Detectar automáticamente</option>
-                      <option value="es">Español</option>
-                      <option value="en">English</option>
-                      <option value="pt">Português</option>
-                      <option value="fr">Français</option>
-                      <option value="de">Deutsch</option>
-                    </select>
-                    <Icon name="chevron" size={18} />
-                  </div>
-                </div>
-
-                <button className="transcribe-button" type="submit" disabled={loading}>
-                  <span>
-                    {loading
-                      ? isTranscribing
-                        ? "Transcribiendo"
-                        : "Preparando el vídeo"
-                      : "Transcribir"}
-                  </span>
-                  {loading ? (
-                    <span className="loading-orbit" aria-hidden="true" />
-                  ) : (
-                    <Icon name="arrow" />
-                  )}
+      <main id="main-content">
+        {screen !== "tool" ? (
+          <section
+            className={`experience-shell hero-scene ${
+              screen === "leaving" ? "is-leaving" : ""
+            }`}
+            aria-labelledby="hero-title"
+          >
+            <div className="hero-copy">
+              <div>
+                <p className="eyebrow">REELSCRIBE</p>
+                <h1 id="hero-title">
+                  Generador de transcripciones de TikTok con IA
+                </h1>
+                <p className="hero-description">
+                  Pega un enlace de TikTok y ReelScribe convierte vídeos
+                  virales, clips de creadores y contenido de marca en texto
+                  listo para reutilizar.
+                </p>
+                <button className="primary-pill" type="button" onClick={openTool}>
+                  <span>Convierte audio en texto</span>
+                  <Icon name="arrow" size={18} />
                 </button>
-              </form>
-
-              {loading && (
-                <div className="phase-card" role="status" aria-live="polite">
-                  <div className="phase-copy">
-                    <strong>{progressLabel}</strong>
-                    <p>{progressDetail}</p>
-                  </div>
-                  <progress
-                    aria-label="Progreso de la transcripción"
-                    max="100"
-                    value={progressValue}
-                  >
-                    {progressValue}%
-                  </progress>
-                </div>
-              )}
+              </div>
             </div>
 
-            <div className="document-panel">
-              <div className="document-toolbar">
-                <h2>Transcripción</h2>
-              </div>
+            <div className="visual-panel">
+              <PreviewDocument />
+            </div>
+          </section>
+        ) : (
+          <section
+            className="experience-shell tool-scene"
+            aria-labelledby="tool-title"
+            aria-busy={loading}
+          >
+            <div className="tool-form-column">
+              <div className="tool-form-card">
+                <div className="tool-card-heading">
+                  <p className="eyebrow">NUEVA TRANSCRIPCIÓN</p>
+                  <h1 id="tool-title" ref={toolTitleRef} tabIndex={-1}>
+                    Pasa un vídeo a texto
+                  </h1>
+                </div>
 
-              <div
-                className={`document-sheet ${
-                  isError ? "is-error" : hasResult ? "has-content" : ""
-                }`}
-                aria-label={
-                  hasResult
-                    ? "Resultado de la transcripción"
-                    : "Área de transcripción vacía"
-                }
-              >
-                {isError ? (
-                  <div className="error-state" role="alert">
-                    <span className="error-icon">
-                      <Icon name="document" size={25} />
-                    </span>
-                    <h3>No pudimos crear la transcripción</h3>
-                    <p>Comprueba el enlace e inténtalo de nuevo.</p>
-                  </div>
-                ) : hasResult ? (
-                  <article className="transcript-content">
-                    <p dir="auto">{transcription}</p>
-                  </article>
-                ) : loading ? (
-                  <div className="loading-document" role="status">
-                    <div className="loading-document-heading">
-                      <span className="loading-orbit" aria-hidden="true" />
-                      <p>{progressLabel}</p>
+                <form className="transcription-form" onSubmit={handleTranscribe}>
+                  <div className="field-group">
+                    <label htmlFor="video-url">Enlace del vídeo</label>
+                    <div className="url-control">
+                      <span className="field-icon">
+                        <Icon name="link" size={18} />
+                      </span>
+                      <input
+                        id="video-url"
+                        name="video-url"
+                        type="url"
+                        inputMode="url"
+                        autoComplete="url"
+                        placeholder="https://tiktok.com/..."
+                        required
+                        value={url}
+                        onChange={(event) => setUrl(event.target.value)}
+                      />
+                      <button
+                        className="paste-button"
+                        type="button"
+                        onClick={handlePaste}
+                      >
+                        <Icon name="clipboard" size={17} />
+                        <span>Pegar</span>
+                      </button>
                     </div>
+                  </div>
+
+                  <div className="field-group">
+                    <label htmlFor="language">Idioma del vídeo</label>
+                    <div className="select-control">
+                      <select
+                        id="language"
+                        name="language"
+                        value={language}
+                        onChange={(event) => setLanguage(event.target.value)}
+                      >
+                        <option value="auto">Detectar automáticamente</option>
+                        <option value="es">Español</option>
+                        <option value="en">English</option>
+                        <option value="pt">Português</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                      </select>
+                      <Icon name="chevron" size={18} />
+                    </div>
+                  </div>
+
+                  <button
+                    className="transcribe-button"
+                    type="submit"
+                    aria-disabled={loading}
+                  >
+                    <span>
+                      {loading
+                        ? isTranscribing
+                          ? "Transcribiendo"
+                          : "Preparando el vídeo"
+                        : "Transcribir vídeo"}
+                    </span>
+                    {loading ? (
+                      <span className="loading-orbit" aria-hidden="true" />
+                    ) : (
+                      <Icon name="arrow" />
+                    )}
+                  </button>
+                </form>
+
+                {loading && (
+                  <div className="phase-card" role="status" aria-live="polite">
+                    <div>
+                      <strong>{progressLabel}</strong>
+                      <p>La transcripción aparecerá en el documento.</p>
+                    </div>
+                    <span className="phase-pulse" aria-hidden="true" />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="visual-panel tool-visual-panel">
+              <article className="live-document">
+                <header className="document-heading">
+                  <p>Transcripción</p>
+                </header>
+
+                <div
+                  className={`document-body ${
+                    hasResult ? "has-content" : ""
+                  } ${isError ? "is-error" : ""}`}
+                  aria-live="polite"
+                >
+                  {isError ? (
+                    <div className="error-state" role="alert">
+                      <strong>No pudimos crear la transcripción.</strong>
+                      <p>Comprueba el enlace e inténtalo de nuevo.</p>
+                    </div>
+                  ) : hasResult ? (
+                    <p className="transcript-copy" dir="auto">
+                      {transcription}
+                    </p>
+                  ) : loading ? (
                     <div className="skeleton-lines" aria-hidden="true">
                       <span />
                       <span />
@@ -310,105 +382,90 @@ export default function Home() {
                       <span />
                       <span />
                     </div>
-                  </div>
-                ) : null}
-              </div>
+                  ) : null}
+                </div>
 
-              {hasResult && (
-                <div
-                  className="action-strip"
-                  aria-label="Acciones de la transcripción"
-                >
-                  <button type="button" onClick={handleCopy}>
-                    <span className="action-icon">
-                      <Icon name={copiedAction === "copy" ? "check" : "copy"} />
-                    </span>
-                    <span>
-                      <strong>
-                        {copiedAction === "copy" ? "Copiado" : "Copiar texto"}
-                      </strong>
-                      <small>Sin formato</small>
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      openChatGPTWithPrompt(
-                        "verify",
-                        "Verifica la veracidad de la siguiente información, sé crítico y busca fallos lógicos o datos erróneos si es necesario:",
-                      )
-                    }
+                {hasResult && (
+                  <footer
+                    className="document-actions"
+                    aria-label="Acciones de la transcripción"
                   >
-                    <span className="action-icon">
+                    <button type="button" onClick={handleCopy}>
                       <Icon
-                        name={copiedAction === "verify" ? "check" : "factCheck"}
+                        name={copiedAction === "copy" ? "check" : "copy"}
+                        size={18}
                       />
-                    </span>
-                    <span>
-                      <strong>
-                        {copiedAction === "verify" ? "Abriendo" : "Verificar"}
-                      </strong>
-                      <small>Contrasta los datos</small>
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      openChatGPTWithPrompt(
-                        "context",
-                        "Dame mucho más contexto, detalles históricos o técnicos, y explícame en profundidad la siguiente información:",
-                      )
-                    }
-                  >
-                    <span className="action-icon">
+                      <span>
+                        {copiedAction === "copy" ? "Copiado" : "Copiar"}
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        openChatGPTWithPrompt(
+                          "verify",
+                          "Verifica la veracidad de la siguiente información, sé crítico y señala datos erróneos o fallos lógicos:",
+                        )
+                      }
+                    >
+                      <Icon
+                        name={
+                          copiedAction === "verify" ? "check" : "factCheck"
+                        }
+                        size={18}
+                      />
+                      <span>
+                        {copiedAction === "verify"
+                          ? "Abriendo"
+                          : "Verificar"}
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        openChatGPTWithPrompt(
+                          "context",
+                          "Amplía con contexto histórico o técnico la siguiente transcripción:",
+                        )
+                      }
+                    >
                       <Icon
                         name={copiedAction === "context" ? "check" : "spark"}
+                        size={18}
                       />
-                    </span>
-                    <span>
-                      <strong>
-                        {copiedAction === "context" ? "Abriendo" : "Dar contexto"}
-                      </strong>
-                      <small>Amplía la idea</small>
-                    </span>
-                  </button>
-
-                  <button
-                    className="chatgpt-action"
-                    type="button"
-                    onClick={() =>
-                      openChatGPTWithPrompt(
-                        "chatgpt",
-                        "Analiza el siguiente texto extraído de un video corto:",
-                      )
-                    }
-                  >
-                    <span className="action-icon">
-                      <Icon
-                        name={copiedAction === "chatgpt" ? "check" : "bolt"}
-                      />
-                    </span>
-                    <span>
-                      <strong>
-                        {copiedAction === "chatgpt" ? "Abriendo" : "Enviar"}
-                      </strong>
-                      <small>A ChatGPT</small>
-                    </span>
-                  </button>
-                </div>
-              )}
+                      <span>
+                        {copiedAction === "context"
+                          ? "Abriendo"
+                          : "Dar contexto"}
+                      </span>
+                    </button>
+                    <button
+                      className="chatgpt-action"
+                      type="button"
+                      onClick={() =>
+                        openChatGPTWithPrompt(
+                          "chatgpt",
+                          "Analiza el siguiente texto extraído de un vídeo:",
+                        )
+                      }
+                    >
+                      <span>
+                        {copiedAction === "chatgpt"
+                          ? "Abriendo"
+                          : "Enviar a ChatGPT"}
+                      </span>
+                      <Icon name="arrow" size={17} />
+                    </button>
+                  </footer>
+                )}
+              </article>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
       </main>
 
       <footer className="site-footer">
         <div className="footer-inner">
-          <a className="brand" href="#workspace" aria-label="ReelScribe, transcriptor">
-            ReelScribe
-          </a>
           <p>© 2026 ReelScribe</p>
         </div>
       </footer>
