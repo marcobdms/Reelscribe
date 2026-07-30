@@ -7,6 +7,7 @@ import {
   type FormEvent,
   type ReactNode,
 } from "react"
+import ThemeToggle from "../components/ThemeToggle"
 import { transcribeVideo } from "../services/api"
 
 type Screen = "hero" | "leaving" | "tool"
@@ -223,6 +224,7 @@ export default function Home() {
           >
             ReelScribe
           </button>
+          <ThemeToggle />
         </div>
       </header>
 

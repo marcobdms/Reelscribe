@@ -1,0 +1,19 @@
+{
+  "name": "reelscribe",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail --names FRONT,BACK --prefix-colors blue,red \"npm:dev:front\" \"npm:dev:back\"",
+    "dev:front": "npm --prefix reelscribe-web run dev",
+    "dev:back": "node scripts/dev-backend.mjs",
+    "build": "npm --prefix reelscribe-web run build",
+    "start:front": "npm --prefix reelscribe-web run start",
+    "start:back": "cd backend-python && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
