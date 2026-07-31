@@ -254,8 +254,16 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="visual-panel">
+            <div className="visual-panel hero-visual-panel">
               <PreviewDocument />
+              <small className="artwork-credit">
+                <span className="artwork-credit-light">
+                  Claude Monet · Ramo de girasoles, 1881
+                </span>
+                <span className="artwork-credit-dark">
+                  Vincent van Gogh · Noche estrellada sobre el Ródano, 1888
+                </span>
+              </small>
             </div>
           </section>
         ) : (
@@ -461,6 +469,14 @@ export default function Home() {
                   </footer>
                 )}
               </article>
+              <small className="artwork-credit">
+                <span className="artwork-credit-light">
+                  Claude Monet · Ramo de girasoles, 1881
+                </span>
+                <span className="artwork-credit-dark">
+                  Vincent van Gogh · Noche estrellada sobre el Ródano, 1888
+                </span>
+              </small>
             </div>
           </section>
         )}
