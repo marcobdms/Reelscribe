@@ -21,3 +21,6 @@ reelscribe-web/yarn-error.log*
 .DS_Store
 *.log
 .vscode/
+
+__pycache__/
+*.pyc
